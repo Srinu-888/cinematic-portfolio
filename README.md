@@ -1,32 +1,56 @@
-# React + TypeScript + Vite
+# Srinivasa Reddy Mithana: Cinematic Automation Portfolio
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+A premium black-and-gold cinematic portfolio built with **React 19, TypeScript, Vite, Tailwind CSS v4, Framer Motion and Lenis**.
+Design language follows the second reference project (gold-gradient Bebas Neue headlines, corner brackets, scroll-stacked project cards, bento skills grid, scroll-drawn timeline), rebuilt around your own photos, certificate and résumé.
 
-Currently, two official plugins are available:
+## Run it
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+npm install
+npm run dev        # local development
+npm run build      # type-check + production build into /dist
+npm run preview    # serve the production build locally
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+Requires Node.js 20 or newer. A ready-built `dist/` folder is also included for instant deployment (Netlify, Vercel, Cloudflare Pages, GitHub Pages or any static host).
+
+## Where to edit things
+
+| What | Where |
+| --- | --- |
+| All text: bio, projects, skills, experience, contact details | `src/data/content.ts` |
+| Colours, fonts, global effects | `src/index.css` (`@theme` block at the top) |
+| Photos and certificate image | `src/assets/` |
+| Résumé and certificate downloads | `public/resume.pdf`, `public/Zoho-Creator-Developer-Associate-Certificate.pdf` |
+| Tab icon | `public/favicon.svg` |
+| SEO title, description, structured data | `index.html` |
+
+`source-assets/` holds your original photos, the certificate PDF and the transparent hero cut-out, in case you want to re-edit them.
+
+## What is in the experience
+
+- Title-sequence intro (plays once per browser session, skipped for reduced-motion users)
+- Hero with stage lighting, gold-dust particles, cursor parallax and a rotating certification seal
+- Smooth inertial scrolling, scroll progress bar, auto-hiding navigation with scroll-spy, full-screen mobile menu
+- Custom cursor on desktop (swells over links, shows "VIEW" on the certificate)
+- About with 3D-tilt portrait and count-up stats
+- Selected Works as a sticky card stack on desktop, plain stacked cards on mobile and tablet
+- Skills bento grid with cursor-following spotlight
+- Experience timeline whose gold line draws as you scroll
+- Credentials: tilting certificate, full-size lightbox, copy-ID button, PDF download
+- Contact form that opens a pre-filled email or WhatsApp message (no backend, nothing stored)
+
+## Accessibility and performance
+
+- Keyboard focus rings, skip link, ARIA labels, dialog semantics for the lightbox
+- `prefers-reduced-motion` respected (no intro, no smooth scroll, no particles, static marquee)
+- Fonts are self-hosted (no Google Fonts requests); images are WebP (about 330 KB total)
+- Responsive from 320 px phones to wide desktops, no horizontal overflow
+
+## Before you publish: please review
+
+1. **Projects** are described at a general level with no client data, credentials or internal links. Confirm your employer is comfortable with them being public and edit or remove any in `src/data/content.ts`.
+2. **Contact details** shown publicly: email, +966 and +91 numbers. Remove any you do not want listed.
+3. **LinkedIn / GitHub**: no links are included because none were provided. Add them in `content.ts` and the footer or contact section if wanted.
+4. The hero image is your original photo with the background removed (cut-out) so it can sit on the black stage; the untouched original is in `source-assets/`.
+5. When deploying, update the `<title>` and add an `og:image` and `og:url` in `index.html` once you have the live URL.
