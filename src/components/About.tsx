@@ -97,6 +97,13 @@ export function About() {
             </div>
 
             <motion.div variants={rise} className="mb-8 flex flex-wrap gap-2">
+              <a
+                href="#venture"
+                className="flex items-center gap-2 rounded-sm border border-gilt/70 bg-gilt/10 px-3.5 py-1.5 text-[10.5px] font-medium uppercase tracking-[0.16em] text-[#F3DBB3] transition-colors hover:bg-gilt hover:text-black"
+              >
+                <span className="pulse-dot h-1.5 w-1.5 rounded-full bg-gilt" />
+                {about.venturePill}
+              </a>
               {about.competencies.map((c) => (
                 <span key={c} className="rounded-sm border border-bronze/35 bg-[#171310] px-3.5 py-1.5 text-[10.5px] font-medium uppercase tracking-[0.16em] text-[#E8D7C5]">
                   {c}

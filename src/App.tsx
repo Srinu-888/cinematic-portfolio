@@ -16,6 +16,7 @@ import { SmoothScroll } from './components/SmoothScroll'
 import { prefersReducedMotion } from './hooks/useMediaQuery'
 import { useScroller } from './hooks/useScroller'
 import { Skills } from './components/Skills'
+import { Venture } from './components/Venture'
 
 const SEEN_KEY = 'mithana-intro-seen'
 
@@ -83,6 +84,7 @@ export default function App() {
         <Skills />
         <Experience />
         <Credentials />
+        <Venture />
       </main>
       <Contact />
       <AnimatePresence>{!done && <Loader preload={preload} onReveal={() => setReady(true)} onDone={finish} />}</AnimatePresence>

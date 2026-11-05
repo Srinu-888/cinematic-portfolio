@@ -12,19 +12,21 @@ const fieldClass =
 
 const channels = [
   { k: 'EMAIL', v: profile.email, href: `mailto:${profile.email}` },
-  { k: 'WHATSAPP', v: profile.phoneSa.display, href: `https://wa.me/${profile.phoneSa.wa}`, ext: true },
-  { k: 'PHONE (INDIA)', v: profile.phoneIn.display, href: `tel:${profile.phoneIn.tel}` },
+  { k: 'CALL', v: profile.phoneCall.display, href: `tel:${profile.phoneCall.tel}` },
+  { k: 'WHATSAPP', v: profile.whatsapp.display, href: `https://wa.me/${profile.whatsapp.wa}`, ext: true },
+  { k: 'LINKEDIN', v: 'mithana-srinivasa-reddy', href: profile.linkedin, ext: true },
 ]
 
 export function Contact() {
   const [form, setForm] = useState({ name: '', email: '', topic: '', message: '' })
-  const [sent, setSent] = useState(false)
+  const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle')
+  const [honey, setHoney] = useState('')
 
   // "Request a walkthrough" on a project card pre-fills the message
   useEffect(() => {
     const onPrefill = (e: Event) => {
       const ask = (e as CustomEvent<string>).detail
-      setSent(false)
+      setStatus('idle')
       setForm((f) => ({ ...f, message: f.message || `Hello Srinivasa, I would like ${ask}.` }))
     }
     window.addEventListener('contact:prefill', onPrefill)
@@ -38,13 +40,35 @@ export function Contact() {
       .filter(Boolean)
       .join('\n\n')
 
-  const whatsapp = `https://wa.me/${profile.phoneSa.wa}?text=${encodeURIComponent(body())}`
+  const whatsapp = `https://wa.me/${profile.whatsapp.wa}?text=${encodeURIComponent(body())}`
+  const subject = `Portfolio enquiry${form.topic ? `: ${form.topic}` : ''} from ${form.name.trim()}`
+  const mailto = `mailto:${profile.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body())}`
 
-  const submit = (e: FormEvent) => {
+  const submit = async (e: FormEvent) => {
     e.preventDefault()
-    const subject = `Portfolio enquiry${form.topic ? `: ${form.topic}` : ''} from ${form.name.trim()}`
-    window.location.href = `mailto:${profile.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body())}`
-    setSent(true)
+    if (status === 'sending') return
+    if (honey) return setStatus('sent') // bot filled the hidden field: pretend success, send nothing
+    setStatus('sending')
+    try {
+      const res = await fetch(profile.formEndpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          name: form.name.trim(),
+          email: form.email.trim(),
+          topic: form.topic || 'Not specified',
+          message: form.message.trim(),
+          _subject: subject,
+          _template: 'table',
+          _captcha: 'false',
+        }),
+      })
+      const data = await res.json().catch(() => null)
+      const ok = res.ok && data && (data.success === true || data.success === 'true')
+      setStatus(ok ? 'sent' : 'error')
+    } catch {
+      setStatus('error')
+    }
   }
 
   return (
@@ -60,7 +84,7 @@ export function Contact() {
               transition={{ duration: 0.8, ease: EASE }}
               className="mb-6 flex items-center gap-4"
             >
-              <span className="eyebrow">06 / CONTACT</span>
+              <span className="eyebrow">07 / CONTACT</span>
               <span className="h-px w-16 bg-gradient-to-r from-gilt/80 via-bronze/40 to-transparent" />
             </motion.div>
 
@@ -119,24 +143,40 @@ export function Contact() {
             <span aria-hidden className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gilt/70 to-transparent" />
             <Brackets size={12} thick={1} />
 
-            {sent ? (
+            {status === 'sent' ? (
               <div className="space-y-5 py-12 text-center" role="status">
                 <span className="mx-auto flex h-11 w-11 items-center justify-center rounded-full border border-gilt text-gilt">✓</span>
-                <h3 className="display-xl text-4xl text-white">Message ready</h3>
+                <h3 className="display-xl text-4xl text-white">Message sent</h3>
                 <p className="mx-auto max-w-sm text-xs font-light leading-relaxed text-muted">
-                  Your email app should open with the message filled in. If nothing opened, write to {profile.email} or send it on WhatsApp.
+                  Thank you{form.name ? `, ${form.name.split(' ')[0]}` : ''}. Your message is in my inbox and I will reply to {form.email || 'your email'} soon.
                 </p>
                 <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
                   <LinkButton href={whatsapp} target="_blank" rel="noopener noreferrer" icon="↗">
-                    Send on WhatsApp
+                    Also message on WhatsApp
                   </LinkButton>
-                  <ActionButton variant="ghost" onClick={() => setSent(false)}>
-                    Edit message
+                  <ActionButton
+                    variant="ghost"
+                    onClick={() => {
+                      setForm({ name: '', email: '', topic: '', message: '' })
+                      setStatus('idle')
+                    }}
+                  >
+                    Send another
                   </ActionButton>
                 </div>
               </div>
             ) : (
               <form onSubmit={submit} className="space-y-6">
+                <input
+                  type="text"
+                  name="_honey"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  aria-hidden
+                  value={honey}
+                  onChange={(e) => setHoney(e.target.value)}
+                  className="absolute left-[-9999px] h-0 w-0 opacity-0"
+                />
                 <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                   <label className="block">
                     <span className="mb-2 block font-mono text-[9.5px] uppercase tracking-[0.2em] text-bronze">{'// Your name'}</span>
@@ -175,15 +215,25 @@ export function Contact() {
                   <textarea required name="message" rows={5} value={form.message} onChange={set('message')} placeholder="Tell me about the process, system or integration you have in mind..." className={`${fieldClass} resize-none`} />
                 </label>
 
+                {status === 'error' && (
+                  <div role="alert" className="rounded-sm border border-gilt/50 bg-gilt/[0.07] p-4 text-xs font-light leading-relaxed text-[#E8D7C5]">
+                    The message could not be sent automatically. Please try again, or use{' '}
+                    <a href={mailto} className="font-medium text-gilt underline underline-offset-4">
+                      your email app
+                    </a>{' '}
+                    or WhatsApp. Your text is kept.
+                  </div>
+                )}
+
                 <div className="flex flex-col gap-3 sm:flex-row">
-                  <ActionButton type="submit" icon="↗" className="flex-1">
-                    Send by email
+                  <ActionButton type="submit" icon={status === 'sending' ? '…' : '↗'} disabled={status === 'sending'} className="flex-1 disabled:opacity-60">
+                    {status === 'sending' ? 'Sending' : status === 'error' ? 'Try again' : 'Send message'}
                   </ActionButton>
                   <LinkButton href={whatsapp} target="_blank" rel="noopener noreferrer" variant="ghost" icon="↗" className="flex-1">
                     WhatsApp
                   </LinkButton>
                 </div>
-                <p className="text-center font-mono text-[9.5px] tracking-[0.12em] text-dim">Opens your email app or WhatsApp with the message pre-filled. Nothing is stored on this site.</p>
+                <p className="text-center font-mono text-[9.5px] tracking-[0.12em] text-dim">Delivered straight to my inbox. This site stores nothing.</p>
               </form>
             )}
           </motion.div>
@@ -196,6 +246,7 @@ export function Contact() {
             <p className="mt-1 font-mono text-[10px] text-dim">© {new Date().getFullYear()} All rights reserved</p>
           </div>
           <nav aria-label="Footer" className="flex items-center gap-6 font-mono text-[10px] uppercase tracking-[0.2em] text-bronze">
+            <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-gilt">LinkedIn</a>
             <a href={profile.resumeHref} target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-gilt">Résumé</a>
             <a href={profile.certificateHref} target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-gilt">Certificate</a>
             <a href="#home" className="transition-colors hover:text-gilt">Back to top ↑</a>

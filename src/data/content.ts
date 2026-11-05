@@ -12,8 +12,16 @@ export const profile = {
   tagline: 'Certified Zoho Creator Developer | Business Automation & ERP Specialist',
   location: 'Riyadh, Saudi Arabia',
   email: 'mithanasrinivas888@gmail.com',
-  phoneSa: { display: '+966 56 509 6318', tel: '+966565096318', wa: '966565096318' },
-  phoneIn: { display: '+91 88860 69026', tel: '+918886069026' },
+  /** Call this number (Saudi Arabia) */
+  phoneCall: { display: '+966 56 509 6318', tel: '+966565096318' },
+  /** WhatsApp number (India) */
+  whatsapp: { display: '+91 88860 69026', wa: '918886069026' },
+  linkedin: 'https://www.linkedin.com/in/mithana-srinivasa-reddy-8a5097261',
+  /**
+   * Contact-form delivery. Messages are emailed to the address in this URL (FormSubmit.co, free, no account).
+   * First submission triggers a one-time activation email: click "Activate" to start receiving messages.
+   */
+  formEndpoint: 'https://formsubmit.co/ajax/mithanasrinivas888@gmail.com',
   resumeHref: '/resume.pdf',
   certificateHref: '/Zoho-Creator-Developer-Associate-Certificate.pdf',
 } as const
@@ -64,6 +72,7 @@ export const about = {
   ],
   competencies: ['Teamwork and Collaboration', 'Design Thinking and Communication'],
   caption: 'Riyadh, Saudi Arabia',
+  venturePill: 'Founder, Arcenvo Technologies • Coming soon',
 }
 
 export interface Project {
@@ -216,9 +225,19 @@ export interface Stop {
   points: string[]
   current?: boolean
   milestone?: boolean
+  upcoming?: boolean
 }
 
 export const journey: Stop[] = [
+  {
+    id: 'arcenvo',
+    period: 'COMING SOON',
+    title: 'FOUNDER',
+    org: 'Arcenvo Technologies Private Limited',
+    type: 'New venture • Simplify, Automate, Accelerate',
+    upcoming: true,
+    points: ['Launching soon: a company providing Zoho services and related technology services, built around one promise to simplify, automate and accelerate.'],
+  },
   {
     id: 'ffico',
     period: 'FEB 2026 - PRESENT',
@@ -329,3 +348,14 @@ export const education = {
 
 export const languages = ['English', 'Telugu', 'Hindi']
 export const interests = ['Travelling', 'Athletics']
+
+export const venture = {
+  name: 'Arcenvo Technologies Private Limited',
+  short: 'ARCENVO',
+  status: 'COMING SOON',
+  tagline: ['Simplify', 'Automate', 'Accelerate'],
+  description:
+    'Arcenvo Technologies Private Limited is the company I am founding. It will provide Zoho services and related technology services, built around one promise: simplify, automate, accelerate. Details are coming soon.',
+  services: ['Zoho services', 'Related services'],
+  ask: 'to talk about Arcenvo Technologies',
+}

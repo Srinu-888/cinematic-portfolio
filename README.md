@@ -20,7 +20,7 @@ Requires Node.js 20 or newer. A ready-built `dist/` folder is also included for 
 | --- | --- |
 | All text: bio, projects, skills, experience, contact details | `src/data/content.ts` |
 | Colours, fonts, global effects | `src/index.css` (`@theme` block at the top) |
-| Photos and certificate image | `src/assets/` |
+| Photos, certificate and Arcenvo logo | `src/assets/` |
 | Résumé and certificate downloads | `public/resume.pdf`, `public/Zoho-Creator-Developer-Associate-Certificate.pdf` |
 | Tab icon | `public/favicon.svg` |
 | SEO title, description, structured data | `index.html` |
@@ -38,7 +38,19 @@ Requires Node.js 20 or newer. A ready-built `dist/` folder is also included for 
 - Skills bento grid with cursor-following spotlight
 - Experience timeline whose gold line draws as you scroll
 - Credentials: tilting certificate, full-size lightbox, copy-ID button, PDF download
-- Contact form that opens a pre-filled email or WhatsApp message (no backend, nothing stored)
+- Contact form that emails the message straight to your inbox (via FormSubmit), with an email-app / WhatsApp fallback if sending fails
+- Founder section for Arcenvo Technologies Private Limited (coming soon), also shown in About and the experience timeline
+
+## Receiving contact-form emails (one-time setup)
+
+The form sends each message to `mithanasrinivas888@gmail.com` through [FormSubmit](https://formsubmit.co), a free service that needs no account or code.
+
+1. Deploy the site (the form only works from the live site, not from a double-clicked file).
+2. Submit the form once yourself.
+3. FormSubmit emails an **activation message** to that Gmail address. Click the activation button (check Spam/Promotions if you do not see it).
+4. From then on every submission arrives in your inbox, with the visitor's address set as Reply-To.
+
+To change the receiving address or switch service, edit `formEndpoint` in `src/data/content.ts`.
 
 ## Accessibility and performance
 
@@ -50,7 +62,7 @@ Requires Node.js 20 or newer. A ready-built `dist/` folder is also included for 
 ## Before you publish: please review
 
 1. **Projects** are described at a general level with no client data, credentials or internal links. Confirm your employer is comfortable with them being public and edit or remove any in `src/data/content.ts`.
-2. **Contact details** shown publicly: email, +966 and +91 numbers. Remove any you do not want listed.
-3. **LinkedIn / GitHub**: no links are included because none were provided. Add them in `content.ts` and the footer or contact section if wanted.
+2. **Contact details** shown publicly: email, call number (+966), WhatsApp number (+91) and LinkedIn. Remove any you do not want listed.
+3. **Arcenvo**: the section says "coming soon" and uses only the tagline from your logo. Update `venture` in `content.ts` when you launch.
 4. The hero image is your original photo with the background removed (cut-out) so it can sit on the black stage; the untouched original is in `source-assets/`.
 5. When deploying, update the `<title>` and add an `og:image` and `og:url` in `index.html` once you have the live URL.

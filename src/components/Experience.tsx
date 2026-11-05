@@ -4,6 +4,14 @@ import { journey, type Stop } from '../data/content'
 import { SectionHeader } from './ui/SectionHeader'
 
 function Node({ stop }: { stop: Stop }) {
+  if (stop.upcoming) {
+    return (
+      <span className="absolute left-[19px] top-[6px] z-10 flex -translate-x-1/2 items-center justify-center md:left-[210px]">
+        <span className="pulse-dot absolute h-3 w-3 rounded-full" />
+        <span className="h-3 w-3 rounded-full border border-dashed border-gilt bg-black" />
+      </span>
+    )
+  }
   if (stop.milestone) {
     return (
       <span className="absolute left-[19px] top-[9px] z-10 h-3 w-3 -translate-x-1/2 rotate-45 border border-gilt bg-gilt shadow-[0_0_14px_#D4AF37] md:left-[210px]" />
@@ -55,6 +63,7 @@ export function Experience() {
                 <div className="hidden pr-10 pt-1 text-right md:block">
                   <span className="font-mono text-[10px] tracking-[0.2em] text-bronze transition-colors group-hover:text-gilt">{stop.period}</span>
                   {stop.current && <span className="mt-2 block font-mono text-[9px] tracking-[0.25em] text-gilt">CURRENT ROLE</span>}
+                  {stop.upcoming && <span className="mt-2 block font-mono text-[9px] tracking-[0.25em] text-gilt">NEW VENTURE</span>}
                 </div>
                 <Node stop={stop} />
 

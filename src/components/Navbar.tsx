@@ -135,7 +135,7 @@ export function Navbar({ ready }: { ready: boolean }) {
             </nav>
             <div className="relative mt-12 space-y-1 font-mono text-[11px] tracking-wider text-muted">
               <a href={`mailto:${profile.email}`} className="block hover:text-gilt">{profile.email}</a>
-              <a href={`tel:${profile.phoneSa.tel}`} className="block hover:text-gilt">{profile.phoneSa.display}</a>
+              <a href={`tel:${profile.phoneCall.tel}`} className="block hover:text-gilt">{profile.phoneCall.display}</a>
             </div>
           </motion.div>
         )}
